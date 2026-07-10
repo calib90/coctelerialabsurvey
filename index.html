@@ -10,7 +10,7 @@
 :root{
   --gold:#C8A96E;--gold2:rgba(200,169,110,0.15);--gold3:rgba(200,169,110,0.28);
   --bg:#080604;
-  --ink:#f0e8d8;--ink2:#f0e8d8;--ink3:rgba(240,232,216,0.78);--ink4:rgba(240,232,216,0.45);
+  --ink:#f5eedd;--ink2:#f5eedd;--ink3:rgba(245,238,221,0.88);--ink4:rgba(245,238,221,0.6);
   --red:rgba(192,57,43,0.12);--red-b:rgba(192,57,43,0.3);
   --green:rgba(74,138,90,0.15);--green-b:#4a8a5a;
   --gb:rgba(200,169,110,0.08);--gb2:rgba(22,18,12,0.82);
@@ -52,7 +52,7 @@ body{background:transparent;color:var(--ink);font-family:'Josefin Sans',sans-ser
 
 /* ── HEADER ─────────────────────────────────────────────────────────────── */
 .hdr{width:100%;max-width:540px;padding:28px 20px 0;display:flex;flex-direction:column;align-items:center;gap:10px}
-.logo{width:72px;height:72px;object-fit:contain}
+.logo{width:72px;height:72px;object-fit:contain;filter:drop-shadow(0 2px 12px rgba(0,0,0,0.9)) drop-shadow(0 0 20px rgba(200,169,110,0.25))}
 .title{font-family:'DM Serif Display',serif;font-size:26px;color:var(--gold);text-align:center;line-height:1.1}
 .divider{width:48px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:3px 0}
 .sub{font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--ink3);text-align:center}
@@ -324,7 +324,7 @@ select option{background:#1a1108}
   <div class="ty">
     <div style="font-size:52px">&#129347;</div>
     <div style="font-family:'DM Serif Display',serif;font-size:28px;color:var(--gold);font-style:italic">Thank you!</div>
-    <div style="font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink3);line-height:1.8">Your feedback has been received.<br>We appreciate your time.</div>
+    <div style="font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink);line-height:1.8">Your feedback has been received.<br>We appreciate your time.</div>
     <div id="photo-section" style="margin-top:20px;width:100%;max-width:360px">
       <div style="font-size:10px;color:var(--ink3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px;font-family:'DM Mono',monospace">Want to share a photo?</div>
       <input type="file" id="photo-input" accept="image/*" style="display:none" onchange="handlePhoto(this)"/>
@@ -340,7 +340,7 @@ select option{background:#1a1108}
     <div style="margin-top:24px;width:100%;max-width:360px">
       <div style="height:1px;background:linear-gradient(90deg,transparent,rgba(200,169,110,.3),transparent);margin-bottom:20px"></div>
       <a href="https://pasaportecocteleria.netlify.app" target="_blank" rel="noopener"
-         style="display:block;width:100%;padding:16px 20px;background:linear-gradient(135deg,rgba(200,169,110,.08),rgba(200,169,110,.15));border:1px solid rgba(200,169,110,.35);border-radius:10px;text-decoration:none;text-align:center">
+         style="display:block;width:100%;padding:16px 20px;background:rgba(22,18,12,0.85);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(200,169,110,0.4);border-radius:12px;text-decoration:none;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,0.5),inset 0 1px 0 rgba(200,169,110,0.2)">
         <div style="margin-bottom:8px;display:flex;justify-content:center">
           <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.4">
             <rect x="4" y="2.5" width="16" height="19" rx="1.5"/>
