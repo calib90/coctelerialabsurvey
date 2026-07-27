@@ -650,14 +650,22 @@ function openPw(){
   setTimeout(function(){document.getElementById('pw-input').focus();},80);
 }
 function closePw(){document.getElementById('pw-modal').classList.remove('show');}
-function checkPw(){
-  var stored=lsGet(PK)||'lab2025';
-  if(document.getElementById('pw-input').value===stored){
-    closePw();document.getElementById('admin-modal').classList.add('show');switchTab('results');
-  }else{
-    document.getElementById('pw-err').textContent='Incorrect password';
-    document.getElementById('pw-input').value='';
-  }
+async function checkPw(){
+  var pw=document.getElementById('pw-input').value;
+  var err=document.getElementById('pw-err');
+  if(!pw){err.textContent='Enter the password';return;}
+  err.textContent='Checking\u2026';
+  try{
+    var res=await fetch(SHEETS_URL,{method:'POST',redirect:'follow',
+      body:JSON.stringify({type:'checkAdminPw',secret:APP_SECRET,password:pw})});
+    var data=await res.json();
+    if(data.status==='ok'&&data.valid===true){
+      closePw();document.getElementById('admin-modal').classList.add('show');switchTab('results');
+    }else{
+      err.textContent='Incorrect password';
+      document.getElementById('pw-input').value='';
+    }
+  }catch(e){err.textContent='Connection error \u2014 try again';}
 }
 function closeAdmin(){document.getElementById('admin-modal').classList.remove('show');}
 function clearAll(){
@@ -743,19 +751,28 @@ function renderSettings(body,foot){
 }
 
 function renderPassword(body,foot){
-  body.innerHTML='<div class="help-txt">Change admin password. Default is <span style="color:var(--gold);font-family:monospace">lab2025</span>.</div>';
+  body.innerHTML='<div class="help-txt">Change admin password. The password is stored server-side and verified there \u2014 it never appears in this page.</div>';
+  var np0=document.createElement('input');np0.type='password';np0.className='pw-inp';np0.id='np0';np0.placeholder='Current password';
   var np1=document.createElement('input');np1.type='password';np1.className='pw-inp';np1.id='np1';np1.placeholder='New password';
-  var np2=document.createElement('input');np2.type='password';np2.className='pw-inp';np2.id='np2';np2.placeholder='Confirm password';np2.style.marginBottom='0';
+  var np2=document.createElement('input');np2.type='password';np2.className='pw-inp';np2.id='np2';np2.placeholder='Confirm new password';np2.style.marginBottom='0';
   var err=document.createElement('div');err.id='pw-ce';err.style.cssText='font-size:10px;color:#c07060;margin-top:8px;font-family:monospace;min-height:16px';
-  body.appendChild(np1);body.appendChild(np2);body.appendChild(err);
+  body.appendChild(np0);body.appendChild(np1);body.appendChild(np2);body.appendChild(err);
   var saveBtn=document.createElement('button');
   saveBtn.className='btn-gold';saveBtn.textContent='Save Password';saveBtn.style.cssText='flex:1;padding:11px 0';
-  saveBtn.onclick=function(){
-    var p1=document.getElementById('np1').value,p2=document.getElementById('np2').value,e=document.getElementById('pw-ce');
+  saveBtn.onclick=async function(){
+    var p0=document.getElementById('np0').value,p1=document.getElementById('np1').value,p2=document.getElementById('np2').value,e=document.getElementById('pw-ce');
+    if(!p0){e.textContent='Enter your current password.';return;}
     if(!p1){e.textContent='Enter a new password.';return;}
     if(p1.length<4){e.textContent='Minimum 4 characters.';return;}
     if(p1!==p2){e.textContent='Passwords do not match.';return;}
-    lsSet(PK,p1);closeAdmin();
+    e.textContent='Saving\u2026';
+    try{
+      var res=await fetch(SHEETS_URL,{method:'POST',redirect:'follow',
+        body:JSON.stringify({type:'setAdminPw',secret:APP_SECRET,current:p0,next:p1})});
+      var data=await res.json();
+      if(data.status==='ok'&&data.changed===true){closeAdmin();}
+      else{e.textContent=data.message||'Could not change password';}
+    }catch(ex){e.textContent='Connection error \u2014 try again';}
   };
   foot.innerHTML='';foot.appendChild(saveBtn);
 }
