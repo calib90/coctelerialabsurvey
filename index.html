@@ -431,12 +431,28 @@ function esc(s){
 var MK='sv_menu'+(MENU_ID?'_'+MENU_ID:''),RK='sv_results'+(MENU_ID?'_'+MENU_ID:''),PK='sv_pw',PHK='sv_photo_on';
 var menu=[],results=[],fCkt='',fStar=0,fYN='',fExp=0,_lastCkt='',_photo=null;
 
+// Converts a normal Google Drive share link into a direct-image URL an
+// <img> tag can actually load (same logic used in the menu app).
+function driveImgUrl(url){
+  if(!url) return '';
+  if(url.indexOf('thumbnail?id')>=0) return url;
+  var m=url.match(/\/d\/([a-zA-Z0-9_-]{10,})/);
+  if(m) return 'https://drive.google.com/thumbnail?id='+m[1]+'&sz=w400';
+  var m2=url.match(/[?&]id=([a-zA-Z0-9_-]{10,})/);
+  if(m2) return 'https://drive.google.com/thumbnail?id='+m2[1]+'&sz=w400';
+  return url;
+}
+
 // Shows the restaurant's own name/logo beside your logo when this link is
 // opened with ?menu=<id>. Does nothing for your own default survey link.
 function applyRestaurantBranding(info){
   if(!info||!info.restaurant_name) return;
   var rl=document.getElementById('restaurant-logo');
-  if(rl&&info.logo_url){ rl.src=info.logo_url; rl.style.display='inline-block'; }
+  if(rl&&info.logo_url){
+    var src=driveImgUrl(info.logo_url);
+    rl.onerror=function(){ rl.style.display='none'; };
+    rl.src=src; rl.style.display='inline-block';
+  }
   var cn=document.getElementById('consent-name');
   if(cn) cn.textContent=info.restaurant_name;
 }
